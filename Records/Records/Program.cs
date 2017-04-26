@@ -1,6 +1,6 @@
 ﻿//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Author: David Mulligan
-// Date: 11 - 4 - 17
+// Date: 26 - 4 - 17
 // ------------------------------------------------------------------------------
 // Program Description:
 // ``````````````````````````````````````````
@@ -68,9 +68,8 @@ namespace Records
 
             CalculateStarRating(scores);
 
-            //FiniteStateMachine();
+            FiniteStateMachine();
 
-            PlayerReport();
 
             Footer();
         }
@@ -325,73 +324,6 @@ namespace Records
         {
             Console.ReadKey();
         }
-        #endregion
-
-        #region debug functions
-
-        #endregion
-
-        #region old code
-        //#region Menu Section
-        /*      static int Menu()
-              {
-                  string selectionString;
-                  bool correctInput = false;
-                  MenuOption selectionOption;
-
-                  Console.Clear();
-
-                  Console.WriteLine("Please select an option");
-
-                  Console.WriteLine();
-
-                  Console.WriteLine("1. Player Report");
-                  Console.WriteLine("2. Score Analysis Report");
-                  Console.WriteLine("3. Search for a Player");
-                  Console.WriteLine("4. Exit");
-
-                  selectionString = Console.ReadLine();
-                  correctInput = OptionCheck(selectionString);
-                  if (correctInput)
-                  {
-                      selectionOption = (MenuOption)Enum.Parse(typeof(MenuOption), selectionString); // Converts the End User's String choice into an Enum('MenuOption') format
-
-                      MenuSelection(selectionOption);
-                  }
-
-                  else
-                  {
-                      selectionOption = (MenuOption)Enum.Parse(typeof(MenuOption), Menu().ToString);
-                  }
-
-                  Console.ReadKey();
-               */  // return selectionOption;
-                   /*
-                  }
-
-               #region Menu Child Functions
-
-                  static bool OptionCheck(string option)
-                  {
-                      bool isGood = false;
-
-                      if(option.Equals("1") || option.Equals("2") || option.Equals("3") || option.Equals("4"))
-                      {
-                          isGood = true;
-                      }
-
-                      return isGood;
-                  }
-
-                      static void MenuSelection(MenuOption choice)
-                      {
-                          Console.WriteLine("You chose {0}", choice);
-                      }
-                  #endregion // Child functions
-
-                  #endregion
-
-              */
         #endregion
 
     }
