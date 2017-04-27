@@ -23,9 +23,13 @@ namespace Records
         public static int currentState = 0;
         public static int newState = 0;
 
+        public static int scoresSum = 0;
+        public static int scoresAverage = 0;
+
         public static string filepath = @"C:\Users\David\Documents\College\Programming\scores.txt";
 
         public static string[,] scores = new string[3,5];
+        public static int[] score = new int[3];
 
         public enum Scores
         {
@@ -113,7 +117,6 @@ namespace Records
 
         static void CalculateStarRating(string[,] array)
         {
-            int[] score = new int[3];
             string[] stars = new string[3];
 
             for(int i = 0; i < 3; i++)      // turns scores column in integers
@@ -128,7 +131,7 @@ namespace Records
                     stars[i] = "*";
                 }
 
-                else if (score[i] >= 400 && score[i] < 600)
+                else if (score[i] >= 400 && score[i] < 600) 
                 {
                     stars[i] = "**";
                 }
@@ -215,6 +218,11 @@ namespace Records
 
             PrintPlayer();
             Spacer();
+             
+            PrintAverageScore();
+            PrintStanardDeviation();
+            PrintTopPlayer();
+            Spacer();
 
             input = UserInput(back2Menu);
 
@@ -232,6 +240,63 @@ namespace Records
 
             Console.WriteLine("Score Analysis");
             Spacer();
+
+
+            int[] count = new int[5];
+            int[] irish = new int[5];
+            int[] nonIrish = new int[5];
+             
+            foreach(int number in score)
+            {
+                int counter;
+
+                Console.WriteLine();
+
+                if(number < 400)
+                {
+                    count[0]++;
+
+                    counter = 0;
+                }
+
+                else if (number < 600)
+                {
+                    count[1]++;
+
+                    counter = 1;
+                }
+
+                else if (number < 700)
+                {
+                    count[2]++;
+
+                    counter = 2;
+                }
+
+                else if (number < 1000)
+                {
+                    count[3]++;
+
+                    counter = 3;
+                }
+
+                else
+                {
+                    count[4]++;
+
+                    counter = 4;
+                }
+
+                Console.WriteLine(counter);
+                
+            }
+
+            foreach(int number in count)        // just for debug use
+            {
+                Console.WriteLine(number);
+            }
+
+
             input = UserInput(back2Menu);
 
             if (input.Equals(@"\"))
@@ -243,17 +308,70 @@ namespace Records
         static void Search()
         {
             string input;
+            bool matchFound = false;
+            int matchLocation = 0;
 
-            Header();
-
-            Console.WriteLine("Search");
-            Spacer();
-            input = UserInput(back2Menu);
-
-            if (input.Equals(@"\"))
+            do
             {
-                newState = 0;
-            }
+                Header();
+
+                Console.WriteLine("Search");
+                Spacer();
+
+                input = UserInput(searchMessage + back2Menu);
+
+                if (input.Equals(@"\"))
+                {
+                    newState = 0;
+                }
+
+                else
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (input.Equals(scores[i, 0]))
+                        {
+                            matchFound = true;
+
+                            if (matchFound)
+                            {
+                                matchLocation = i;
+                            }
+                        }
+                    }
+
+                    // Console.WriteLine("your input was {0}", input);
+
+                    if (matchFound)
+                    {
+                        Header();
+
+                        Console.WriteLine(foundMatch, input);
+                        Spacer();
+
+                        Console.WriteLine("Player Name: {0}", scores[matchLocation,(int)Scores.Name]);
+                        Console.WriteLine("Player Score: {0}", scores[matchLocation, (int)Scores.Score]);
+
+                        Spacer();
+
+                        Console.WriteLine(searchAgain);
+
+                        Footer();
+                    }
+
+                    else
+                    {
+                        Header();
+
+                        Console.WriteLine(noMatch, input);
+                        Console.WriteLine(searchAgain);
+
+                        Footer();
+                    }
+
+                    Header();
+                }
+            } while (newState != 0);
         }
 
         static void Exit()
@@ -282,6 +400,7 @@ namespace Records
         }
         #endregion
 
+        #region Player Report Child Functions
         static void PrintPlayer()
         {
             string displayFormat = "{0,-15}{1,-10}{2}";
@@ -291,6 +410,76 @@ namespace Records
                 Console.WriteLine(displayFormat, scores[i,(int)Scores.Name], scores[i, (int)Scores.Score], scores[i, (int)Scores.Stars]);
             }
         }
+
+        static void PrintAverageScore()
+        {
+
+            for(int i = 0; i < score.Length; i++)
+            {
+                scoresSum += score[i];
+            }
+
+            scoresAverage = scoresSum / score.Length;
+
+            Console.WriteLine(scoresAverage);     
+        }
+
+        static void PrintStanardDeviation()
+        {
+            double standardDeviation = 0;
+            double mean = 0;
+            double squaredMean = 0;
+            double squaredSum = 0;
+
+            int[] scoresSquared = new int[score.Length];
+
+            mean = scoresAverage;
+
+            int number;
+            int numberSquared;
+
+            for(int i =0; i < score.Length; i++)        // Works out the squared values of the scores
+            {
+                number = score[i];
+
+                numberSquared = (int)Math.Pow((double)(number - scoresAverage), 2.0);
+
+                scoresSquared[i] = numberSquared;
+            }
+
+            for(int i = 0; i < scoresSquared.Length; i++)       // Works out the Sum of all the squared values
+            {
+                squaredSum += scoresSquared[i];
+            }
+
+            squaredMean = squaredSum / scoresSquared.Length;
+
+            standardDeviation = Math.Sqrt(squaredMean);
+
+            Console.WriteLine(standardDeviation);
+        }
+
+        static void PrintTopPlayer()
+        {
+            int highestScore = 0;
+            int scoreplace = 0;
+
+            for(int i = 0; i < score.Length; i++)
+            {
+                if(score[i] > highestScore)
+                {
+                    highestScore = score[i];
+                    scoreplace = i;
+                }
+            }
+
+            Console.WriteLine("high score belongs to {0} with {1}", scores[scoreplace, (int)Scores.Name], scores[scoreplace, (int)Scores.Score]);
+        }
+        #endregion
+
+        #region Search Child Functions
+
+        #endregion
 
         #endregion
 
@@ -307,6 +496,10 @@ namespace Records
         #region Text Strings
         static string menuSelect = "Please select an option from above (in format 1 - 4 or program will crash)"; // text will need to be changed back, additional text is only for debugging proposes
         static string back2Menu = @"Please press the backslash '\', to go back to the menu";
+        static string searchMessage = "Please enter in a player number to begin, or \n";
+        static string noMatch = "I'm sorry but, No Matches have been found for {0}";
+        static string searchAgain = "Please press any key to search again...";
+        static string foundMatch = "A match for Player Number {0} was found";
         #endregion
 
         #region housekeeping
